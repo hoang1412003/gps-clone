@@ -1,0 +1,44 @@
+.ant-carousel{
+    height: 100%;
+    /* width: 100%; */
+}
+
+.text-login{
+    color: #3A4E61;
+}
+.text-size{
+    font-size: 12px;
+}
+.logo {
+    height: 56px;
+    width: 95px;
+}
+.ant-space-item {
+    width: 100%;
+}
+
+.qr{
+    height: 110px;
+}
+
+.custom-divider {
+    height: 0.8px;
+}
+.ant-carousel .slick-list {
+    height: 100%;
+    /* width: 100%; */
+}
+
+.ant-carousel .slick-list .slick-track {
+    height: 100%;
+      /* width: 100%; */
+}
+
+.ant-carousel .slick-list .slick-track div {
+    height: 100%;
+      /* width: 100%; */
+}
+
+button.ant-btn.css-dev-only-do-not-override-5uvb3z.ant-btn-primary.ant-btn-color-primary.ant-btn-variant-solid {
+    width: 100%;
+}
