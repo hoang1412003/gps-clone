@@ -12,6 +12,7 @@ import { Button, Form, Input, Space } from 'antd';
 import axios from 'axios';
 import { message } from 'antd';
 import { useNavigate } from 'react-router-dom'; // Nếu có điều hướng sau login
+import Cookies from "js-cookie";
 
 
 
@@ -19,11 +20,11 @@ interface SubmitButtonProps {
     form: FormInstance;
 }
 interface LoginFormValues {
-  username: string;
-  password: string;
+    username: string;
+    password: string;
 }
 const domain = import.meta.env.VITE_MID_API_URL;
-        console.log("baseURL: ", domain)
+console.log("baseURL: ", domain)
 const SubmitButton: React.FC<React.PropsWithChildren<SubmitButtonProps>> = ({ form, children }) => {
     const [submittable, setSubmittable] = React.useState<boolean>(false);
 
@@ -50,29 +51,35 @@ const qrs = [ch, as, zl];
 const SignUp = () => {
     const navigate = useNavigate(); // nếu dùng react-router
     const handleLogin = async (values: LoginFormValues) => {
-    try {
-        
-        console.log("values: ", values)
-        const response = await axios.post(`${domain}/api/v1/users/login`, {
-            username: values.username,
-            password: values.password,
-        });
-        console.log("response: ", response)
-        const { result, message: msg, data } = response.data;
-        
-        if (result) {
-            localStorage.setItem('accessToken', data.token);
-            localStorage.setItem('refreshToken', data.refreshToken);
-            message.success('Đăng nhập thành công!');
-            navigate('/monitor'); // Điều hướng nếu cần
-        } else {
-            message.error(msg || 'Đăng nhập thất bại!');
+        try {
+
+            console.log("values: ", values)
+            const response = await axios.post(`${domain}/users/login`, {
+                username: values.username,
+                password: values.password,
+            });
+            console.log("response: ", response)
+            const { result, message: msg, data } = response.data;
+            console.log("result: ", result)
+            if (result) {
+                 console.log("check")
+                localStorage.setItem("uid", data?.data[0]?.userId);
+                localStorage.setItem("dp_id", data?.data[0]?.department_id);
+                localStorage.setItem("role", data?.data[0]?.role);
+                
+                Cookies.set("accessToken", data?.data[0]?.token);
+                Cookies.set("refreshToken", data?.data[0]?.refreshToken);
+                message.success('Đăng nhập thành công!');
+                console.log("check")
+                navigate('/monitor'); // Điều hướng nếu cần
+            } else {
+                message.error(msg || 'Đăng nhập thất bại!');
+            }
+        } catch (error) {
+            console.error(error);
+            message.error('Có lỗi xảy ra khi đăng nhập!');
         }
-    } catch (error) {
-        console.error(error);
-        message.error('Có lỗi xảy ra khi đăng nhập!');
-    }
-};
+    };
 
     const [form] = Form.useForm();
     return (

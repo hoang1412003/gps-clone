@@ -14,6 +14,7 @@
     "antd": "^5.25.3",
     "axios": "^1.9.0",
     "gps": "file:",
+    "js-cookie": "^3.0.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.1"
@@ -21,6 +22,7 @@
   "devDependencies": {
     "@eslint/js": "^9.25.0",
     "@tailwindcss/postcss": "^4.1.8",
+    "@types/js-cookie": "^3.0.6",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@types/react-router-dom": "^5.3.3",
