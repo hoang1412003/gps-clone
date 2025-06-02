@@ -5,14 +5,13 @@ import logo from '../../assets/images/login/logo/log-mid.png'
 import as from '../../assets/images/login/qr/as.png'
 import ch from '../../assets/images/login/qr/ch.png'
 import zl from '../../assets/images/login/qr/zl.png'
-import './login.css'
 import React from 'react';
 import type { FormInstance } from 'antd';
 import { Button, Form, Input, Space, message } from 'antd';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom'; // Nếu có điều hướng sau login
 import Cookies from "js-cookie";
-import { loginUser } from '../../services/auth';
+import { loginUserService } from '../../services/authService';
 
 
 
@@ -69,14 +68,14 @@ const SignUp = () => {
     };
     const handleLogin = async (values: LoginFormValues) => {
         try {
-
+            // viết 1 hàm riêng
             console.log("values: ", values)
-            const Res = await loginUser({
+            const res = await loginUserService({
                 username: values.username,
                 password: values.password,
             })
-            console.log("Res: ", Res)
-            const { result, message, data } = Res.data;
+            console.log("res: ", res)
+            const { result, message, data } = res;
             console.log("result: ", result)
             if (result) {
                 console.log("data: ", data)
@@ -95,6 +94,7 @@ const SignUp = () => {
                 });
             }
         } catch (err: unknown) {
+            // viết riêng 1 hàm
             console.log("check 2: ", err)
             const axiosError = err as AxiosError;
 
