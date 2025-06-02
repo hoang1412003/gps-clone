@@ -8,13 +8,22 @@ import zl from '../../assets/images/login/qr/zl.png'
 import './login.css'
 import React from 'react';
 import type { FormInstance } from 'antd';
-import { Button, Form, Input, Space } from 'antd';
-import axios from 'axios';
-import { message } from 'antd';
+import { Button, Form, Input, Space, message } from 'antd';
+import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom'; // Nếu có điều hướng sau login
 import Cookies from "js-cookie";
+import { loginUser } from '../../services/auth';
 
 
+
+type ErrorResponse = {
+    message?: string;
+    errors?: {
+        msg: string;
+        param?: string;
+        value?: string;
+    }[];
+};
 
 interface SubmitButtonProps {
     form: FormInstance;
@@ -49,41 +58,62 @@ const banners = [banner1, banner2]; // có thể mở rộng thêm ảnh
 const qrs = [ch, as, zl];
 
 const SignUp = () => {
-    const navigate = useNavigate(); // nếu dùng react-router
+    const navigate = useNavigate();
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const error = (message: string) => {
+        messageApi.open({
+            type: 'error',
+            content: message,
+        });
+    };
     const handleLogin = async (values: LoginFormValues) => {
         try {
 
             console.log("values: ", values)
-            const response = await axios.post(`${domain}/users/login`, {
+            const Res = await loginUser({
                 username: values.username,
                 password: values.password,
-            });
-            console.log("response: ", response)
-            const { result, message: msg, data } = response.data;
+            })
+            console.log("Res: ", Res)
+            const { result, message, data } = Res.data;
             console.log("result: ", result)
             if (result) {
-                 console.log("check")
-                localStorage.setItem("uid", data?.data[0]?.userId);
-                localStorage.setItem("dp_id", data?.data[0]?.department_id);
-                localStorage.setItem("role", data?.data[0]?.role);
-                
-                Cookies.set("accessToken", data?.data[0]?.token);
-                Cookies.set("refreshToken", data?.data[0]?.refreshToken);
-                message.success('Đăng nhập thành công!');
+                console.log("data: ", data)
+                localStorage.setItem("isLoggedIn", "true");
+                localStorage.setItem("uid", data[0].userId);
+                localStorage.setItem("customerId", data[0].customerId);
+                localStorage.setItem("role", data[0].role);
+
+                Cookies.set("accessToken", data[0].token);
+                Cookies.set("refreshToken", data[0].refreshToken);
                 console.log("check")
-                navigate('/monitor'); // Điều hướng nếu cần
-            } else {
-                message.error(msg || 'Đăng nhập thất bại!');
+                navigate('/monitor', {
+                    state: {
+                        msg: message
+                    },
+                });
             }
-        } catch (error) {
-            console.error(error);
-            message.error('Có lỗi xảy ra khi đăng nhập!');
+        } catch (err: unknown) {
+            console.log("check 2: ", err)
+            const axiosError = err as AxiosError;
+
+            if (axiosError.response && axiosError.response.data) {
+                const resData = axiosError.response.data as ErrorResponse;
+
+                if (resData.errors && resData.errors.length > 0) {
+                    error(resData.errors[0].msg);
+                } else if (resData.message) {
+                    error(resData.message);
+                }
+            }
         }
     };
 
     const [form] = Form.useForm();
     return (
         <div className="flex w-full h-screen p-4 bg-gray-100">
+            {contextHolder}
             <div className="w-[70%] mr-2 h-full rounded-xl overflow-hidden">
                 <Carousel autoplay autoplaySpeed={3000} effect="scrollx" className='h-full w-full'>
                     {banners.map((banner, index) => (
