@@ -8,21 +8,10 @@ import zl from '../../assets/images/login/qr/zl.png'
 import React from 'react';
 import type { FormInstance } from 'antd';
 import { Button, Form, Input, Space, message } from 'antd';
-import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom'; // Nếu có điều hướng sau login
-import Cookies from "js-cookie";
 import { loginUserService } from '../../services/authService';
-
-
-
-type ErrorResponse = {
-    message?: string;
-    errors?: {
-        msg: string;
-        param?: string;
-        value?: string;
-    }[];
-};
+import { setAuthData } from '../../utils/setAuthData';
+import { handleAxiosError } from '../../utils/handleAxiosError';
 
 interface SubmitButtonProps {
     form: FormInstance;
@@ -68,7 +57,6 @@ const SignUp = () => {
     };
     const handleLogin = async (values: LoginFormValues) => {
         try {
-            // viết 1 hàm riêng
             console.log("values: ", values)
             const res = await loginUserService({
                 username: values.username,
@@ -79,13 +67,14 @@ const SignUp = () => {
             console.log("result: ", result)
             if (result) {
                 console.log("data: ", data)
-                localStorage.setItem("isLoggedIn", "true");
-                localStorage.setItem("uid", data[0].userId);
-                localStorage.setItem("customerId", data[0].customerId);
-                localStorage.setItem("role", data[0].role);
-
-                Cookies.set("accessToken", data[0].token);
-                Cookies.set("refreshToken", data[0].refreshToken);
+                const { userId, customerId, role, token, refreshToken } = data[0];
+                setAuthData([{
+                    userId,
+                    customerId,
+                    role,
+                    token,
+                    refreshToken
+                }]);
                 console.log("check")
                 navigate('/monitor', {
                     state: {
@@ -94,19 +83,7 @@ const SignUp = () => {
                 });
             }
         } catch (err: unknown) {
-            // viết riêng 1 hàm
-            console.log("check 2: ", err)
-            const axiosError = err as AxiosError;
-
-            if (axiosError.response && axiosError.response.data) {
-                const resData = axiosError.response.data as ErrorResponse;
-
-                if (resData.errors && resData.errors.length > 0) {
-                    error(resData.errors[0].msg);
-                } else if (resData.message) {
-                    error(resData.message);
-                }
-            }
+            handleAxiosError(err, error)
         }
     };
 
