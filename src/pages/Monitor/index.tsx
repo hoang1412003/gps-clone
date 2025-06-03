@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { message } from 'antd';
 import { useEffect } from "react";
+import MapView from "./components/MapView";
 
 const Monitor = () => {
     const [messageApi, contextHolder] = message.useMessage();
@@ -18,7 +19,7 @@ const Monitor = () => {
     return (
         <div>
             {contextHolder}
-            monitor
+            <MapView/>
         </div>
     );
 };

@@ -2,6 +2,10 @@
     height: 100%;
     /* width: 100%; */
 }
+.absolute.-bottom-10 {
+        background: #e6f4ff;
+    border: 1px solid #91caff;
+}
 .text-login{
     color: #3A4E61;
 }
@@ -38,6 +42,6 @@
       /* width: 100%; */
 }
 
-button.ant-btn.css-dev-only-do-not-override-5uvb3z.ant-btn-primary.ant-btn-color-primary.ant-btn-variant-solid {
+button.ant-btn.css-dev-only-do-not-override-mc1tut.ant-btn-primary.ant-btn-color-primary.ant-btn-variant-solid {
     width: 100%;
 }
