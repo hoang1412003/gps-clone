@@ -3,7 +3,8 @@ import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { ConfigProvider } from 'antd';
 import { routes } from "./routes/routesConfig";
 import viVN from "antd/es/locale/vi_VN";
-import "./css/tailwind-override.css"
+import "./css/tailwind-override.css";
+import './css/common.css'
 import React, { useState } from 'react';
 import { MapContext } from './contexts/MapContext';
 

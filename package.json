@@ -12,6 +12,7 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.8",
     "antd": "^5.25.3",
+    "antd-style": "^3.7.1",
     "axios": "^1.9.0",
     "gps": "file:",
     "js-cookie": "^3.0.5",
