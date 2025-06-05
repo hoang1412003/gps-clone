@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Popup } from "react-leaflet";
-import L from "leaflet";
+import { MapContainer, TileLayer, Popup, useMap } from "react-leaflet";
+import L, { type LeafletEvent } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-rotatedmarker";
 import RotatedMarker from "../components/RotatedMarker";
 import { getGPSService } from "../../../services/gpsService";
 import truckCar from "../../../assets/images/monitor/car/truck-car.png";
+import { MapContext, useMapContext } from "../../../contexts/MapContext";
 
 interface IVehicle {
     vehicle_name: string;
@@ -24,9 +25,13 @@ const titleLayer = {
     image: "/assets/images/maptype-1.png",
     type: "roadmap",
     subdomains: ["mt0", "mt1", "mt2", "mt3"],
-  }
+}
 
 const REFRESH_INTERVAL = 10; // giây
+const MapWrapper = ({ children }: { children: React.ReactNode }) => {
+    const map = useMap();
+    return <MapContext.Provider value={map}>{children}</MapContext.Provider>;
+};
 
 const MapView = () => {
     const [vehicles, setVehicles] = useState<IVehicle[]>([]);
@@ -72,53 +77,54 @@ const MapView = () => {
             center={[10.7769, 106.7009]} // TP.HCM
             zoom={12}
             scrollWheelZoom={true}
+            zoomControl={true}
             style={{ height: "100vh", width: "100%" }}
         >
-            <div className="absolute z-[998] bg-white top-0 left-0 right-0 flex justify-center">
-                <div className="absolute -bottom-10 px-4">
-                    <div data-show="true" className="ant-alert ant-alert-info ant-alert-no-icon py-1 css-vj858a" role="alert">
-                        <div className="ant-alert-content">
-                            <div className="ant-alert-message">
-                                <div className="text-[12px]">
-                                    <div>Làm mới sau <span className="font-bold">{countdown}</span> giây,{" "}
-                                        <span
-                                            className="underline text-prim cursor-pointer text-yellow-400"
-                                            onClick={() => {
-                                                fetchVehicles();
-                                                setCountdown(REFRESH_INTERVAL);
-                                            }}
-                                        >
-                                            Làm mới
-                                        </span>
+            <MapWrapper>
+                <div className="absolute z-[998] bg-white top-0 left-0 right-0 flex justify-center">
+                    <div className="absolute -bottom-10 px-4">
+                        <div data-show="true" className="ant-alert ant-alert-info ant-alert-no-icon py-1 css-vj858a" role="alert">
+                            <div className="ant-alert-content">
+                                <div className="ant-alert-message">
+                                    <div className="text-[12px]">
+                                        <div>Làm mới sau <span className="font-bold">{countdown}</span> giây,{" "}
+                                            <span
+                                                className="underline text-prim cursor-pointer text-yellow-400"
+                                                onClick={() => {
+                                                    fetchVehicles();
+                                                    setCountdown(REFRESH_INTERVAL);
+                                                }}
+                                            >
+                                                Làm mới
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <TileLayer
-      key={titleLayer?.subdomains?.join(",")}
-      maxZoom={30}
-      url={titleLayer?.url}
-      //attribution={titleLayer?.attribution}
-      subdomains={titleLayer?.subdomains || []}
-    />
-
-            {vehicles.map((vehicle) => (
-                <RotatedMarker
-                    key={`${vehicle.vehicle_name}-${vehicle.latitude}-${vehicle.longitude}-${vehicle.rotation}`}
-                    position={[parseFloat(vehicle.latitude), parseFloat(vehicle.longitude)]}
-                    icon={customIcon}
-                    rotationAngle={vehicle.rotation}
-                >
-                    <Popup>
-                        <strong>{vehicle.vehicle_name}</strong><br />
-                        Speed: {vehicle.speed} km/h
-                    </Popup>
-                </RotatedMarker>
-            ))}
+                <TileLayer
+                    key={titleLayer?.subdomains?.join(",")}
+                    maxZoom={30}
+                    url={titleLayer?.url}
+                    //attribution={titleLayer?.attribution}
+                    subdomains={titleLayer?.subdomains || []}
+                />
+                {vehicles.map((vehicle) => (
+                    <RotatedMarker
+                        key={`${vehicle.vehicle_name}-${vehicle.latitude}-${vehicle.longitude}-${vehicle.rotation}`}
+                        position={[parseFloat(vehicle.latitude), parseFloat(vehicle.longitude)]}
+                        icon={customIcon}
+                        rotationAngle={vehicle.rotation}
+                    >
+                        <Popup>
+                            <strong>{vehicle.vehicle_name}</strong><br />
+                            Speed: {vehicle.speed} km/h
+                        </Popup>
+                    </RotatedMarker>
+                ))}
+            </MapWrapper>
         </MapContainer>
     );
 };

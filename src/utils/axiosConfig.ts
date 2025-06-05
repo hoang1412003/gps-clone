@@ -45,7 +45,7 @@ export const createAxiosInstance = (domain: string, timeout: number) => {
     (response) => response,
     async (error) => {
       const originalRequest = error.config;
-
+      console.log("error.response?.status: ", error.response?.status)
       if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
         console.log("check refreshToken: ", originalRequest)
@@ -72,8 +72,9 @@ export const createAxiosInstance = (domain: string, timeout: number) => {
           });
 
           const { result, data } = res.data;
-          if (result && data?.token) {
-            const newToken = data.token;
+          if (result && data[0]?.token) {
+            console.log("check refresh-token: ", res)
+            const newToken = data[0].token;
             Cookies.set("accessToken", newToken);
 
             axiosInstance.defaults.headers.Authorization = `Bearer ${newToken}`;
