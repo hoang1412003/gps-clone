@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MapContainer, TileLayer, Popup, useMap } from "react-leaflet";
 import L, { type LeafletEvent } from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -28,15 +28,22 @@ const titleLayer = {
 }
 
 const REFRESH_INTERVAL = 10; // giây
-const MapWrapper = ({ children }: { children: React.ReactNode }) => {
-    const map = useMap();
-    return <MapContext.Provider value={map}>{children}</MapContext.Provider>;
+
+const MapSetter = () => {
+  const map = useMap();              // lấy L.Map
+  const { setMap } = useMapContext();
+
+  // chỉ chạy 1 lần khi component mount
+  useEffect(() => {
+    setMap(map);
+  }, [map, setMap]);
+
+  return null;                       // không render gì
 };
 
 const MapView = () => {
     const [vehicles, setVehicles] = useState<IVehicle[]>([]);
     const [countdown, setCountdown] = useState(REFRESH_INTERVAL);
-
     const customIcon = L.icon({
         iconUrl: truckCar,
         iconSize: [32, 32],
@@ -73,14 +80,14 @@ const MapView = () => {
     }, []);
 
     return (
-        <MapContainer
-            center={[10.7769, 106.7009]} // TP.HCM
-            zoom={12}
-            scrollWheelZoom={true}
-            zoomControl={true}
-            style={{ height: "100vh", width: "100%" }}
-        >
-            <MapWrapper>
+            <MapContainer
+                center={[10.7769, 106.7009]} // TP.HCM
+                zoom={12}
+                scrollWheelZoom={true}
+                zoomControl={false}
+                style={{ height: "100vh", width: "100%" }}
+            >
+                <MapSetter />   
                 <div className="absolute z-[998] bg-white top-0 left-0 right-0 flex justify-center">
                     <div className="absolute -bottom-10 px-4">
                         <div data-show="true" className="ant-alert ant-alert-info ant-alert-no-icon py-1 css-vj858a" role="alert">
@@ -124,8 +131,7 @@ const MapView = () => {
                         </Popup>
                     </RotatedMarker>
                 ))}
-            </MapWrapper>
-        </MapContainer>
+            </MapContainer>
     );
 };
 

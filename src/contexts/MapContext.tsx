@@ -1,6 +1,14 @@
-// MapContext.tsx
-import { createContext, useContext } from "react";
-import { Map } from "leaflet";
+import { createContext, useContext } from 'react';
+import L from 'leaflet';
 
-export const MapContext = createContext<Map | null>(null);
+type MapContextType = {
+  map: L.Map | null;
+  setMap: (map: L.Map) => void;
+};
+
+export const MapContext = createContext<MapContextType>({
+  map: null,
+  setMap: () => {},
+});
+
 export const useMapContext = () => useContext(MapContext);

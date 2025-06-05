@@ -4,11 +4,14 @@ import { ConfigProvider } from 'antd';
 import { routes } from "./routes/routesConfig";
 import viVN from "antd/es/locale/vi_VN";
 import "./css/tailwind-override.css"
-import React from 'react';
+import React, { useState } from 'react';
+import { MapContext } from './contexts/MapContext';
 
 function App() {
+    const [map, setMap] = useState<L.Map | null>(null);
   return (
     <>
+    <MapContext.Provider value={{ map, setMap }}>
       <BrowserRouter>
         <Routes>
           {routes.map((route, index) => (
@@ -26,6 +29,7 @@ function App() {
           ))}
         </Routes>
       </BrowserRouter>
+      </MapContext.Provider>
     </>
   )
 }

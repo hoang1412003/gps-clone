@@ -16,8 +16,16 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
-  const map = useMapContext();
-  console.log("map: ", map)
+   const { map } = useMapContext();
+
+  const handleZoomIn = () => {
+    console.log("map layou: ", map)
+    map?.zoomIn();
+  };
+
+  const handleZoomOut = () => {
+    map?.zoomOut();
+  };
   return (
     <Layout className='h-full'>
       <Sider trigger={null} collapsible collapsed={collapsed} className='relative'>
@@ -145,10 +153,10 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
               <div className="w-7 h-7 rounded-full border border-white overflow-hidden">
                 <span className="ant-btn-icon flex items-center justify-center w-full h-full"><svg className='text-white' stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 256 256" height="16" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M128,58a30,30,0,1,0,30,30A30,30,0,0,0,128,58Zm0,48a18,18,0,1,1,18-18A18,18,0,0,1,128,106Zm0,32a30,30,0,1,0,30,30A30,30,0,0,0,128,138Zm0,48a18,18,0,1,1,18-18A18,18,0,0,1,128,186Zm88-40H198V78h18a6,6,0,0,0,0-12H198V40a14,14,0,0,0-14-14H72A14,14,0,0,0,58,40V66H40a6,6,0,0,0,0,12H58v68H40a6,6,0,0,0,0,12H58v58a14,14,0,0,0,14,14H184a14,14,0,0,0,14-14V158h18a6,6,0,0,0,0-12Zm-30,70a2,2,0,0,1-2,2H72a2,2,0,0,1-2-2V40a2,2,0,0,1,2-2H184a2,2,0,0,1,2,2Z"></path></svg></span>
               </div>
-              <div className="w-7 h-7 rounded-full border border-white overflow-hidden"  onClick={() => map?.zoomIn()}>
+              <div className="w-7 h-7 rounded-full border border-white overflow-hidden"   onClick={handleZoomOut}>
                 <span className="ant-btn-icon flex items-center justify-center w-full h-full"><svg  className='text-white' stroke="currentColor" fill="currentColor" stroke-width="0" version="1.1" viewBox="0 0 17 17" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><g></g><path d="M15 8v1h-13v-1h13z"></path></svg></span>
               </div>
-              <div className="w-7 h-7 rounded-full border border-white overflow-hidden"  onClick={() => map?.zoomIn()}>
+              <div className="w-7 h-7 rounded-full border border-white overflow-hidden"   onClick={handleZoomIn}>
                 <span className="ant-btn-icon flex items-center justify-center w-full h-full"><svg  className='text-white' stroke="currentColor" fill="currentColor" stroke-width="0" version="1.1" viewBox="0 0 17 17" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><g></g><path d="M16 9h-7v7h-1v-7h-7v-1h7v-7h1v7h7v1z"></path></svg></span>
               </div>
               <div className="w-7 h-7 rounded-full border border-white overflow-hidden">
