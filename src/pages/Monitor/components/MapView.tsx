@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Popup, useMap } from "react-leaflet";
-import L, { type LeafletEvent } from "leaflet";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-rotatedmarker";
 import RotatedMarker from "../components/RotatedMarker";
 import { getGPSService } from "../../../services/gpsService";
 import truckCar from "../../../assets/images/monitor/car/truck-car.png";
-import { MapContext, useMapContext } from "../../../contexts/MapContext";
+import { useMapContext } from "../../../contexts/MapContext";
 
 interface IVehicle {
     vehicle_name: string;
