@@ -42,4 +42,9 @@ export interface IVehicle {
     speed_device: number;
     vol: number;
     time_record: number;
+    key: string
 }
+
+// export interface IVehiclePosition {
+//     latitude: 
+// }

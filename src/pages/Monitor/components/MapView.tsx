@@ -1,17 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Popup, useMap } from "react-leaflet";
-import L from "leaflet";
+import L, { type LatLngTuple } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-rotatedmarker";
 import RotatedMarker from "../components/RotatedMarker";
 import truckCar from "../../../assets/images/monitor/car/truck-car.png";
 import { useMapContext } from "../../../contexts/MapContext";
 import React from "react";
+import { MapCenterUpdater } from "./MapCenterUpdater";
+
 interface MapViewProps {
   vehicles: IVehicle[];
-  countdown: number;
-  onRefresh: () => void;
+  onCountdownFinished: () => void;
+  selectedVehicle: LatLngTuple | null;
 }
+
 interface IVehicle {
     vehicle_name: string;
     latitude: string;
@@ -30,59 +33,45 @@ const titleLayer = {
     type: "roadmap",
     subdomains: ["mt0", "mt1", "mt2", "mt3"],
 }
-
-//const REFRESH_INTERVAL = 10; // giây
-
+const REFRESH_INTERVAL = 10;
 const MapSetter = () => {
-  const map = useMap();              // lấy L.Map
+  const map = useMap();             
   const { setMap } = useMapContext();
 
-  // chỉ chạy 1 lần khi component mount
+  
   useEffect(() => {
     setMap(map);
   }, [map, setMap]);
 
-  return null;                       // không render gì
+  return null;                      
 };
 
-const MapView: React.FC<MapViewProps> = ({ vehicles, countdown, onRefresh }) => {
-    // const [vehicles, setVehicles] = useState<IVehicle[]>([]);
-    // const [countdown, setCountdown] = useState(REFRESH_INTERVAL);
+const MapView: React.FC<MapViewProps> = ({
+  vehicles,
+  onCountdownFinished,
+  selectedVehicle,
+}) => {
+    //const [position, setPosition] = useState<LatLngTuple>([10.7769, 106.7009])
+    const [countdown, setCountdown] = useState(REFRESH_INTERVAL);
     const customIcon = L.icon({
         iconUrl: truckCar,
         iconSize: [32, 32],
         iconAnchor: [16, 16],
     });
+    console.log("positon: ", selectedVehicle)
+    useEffect(() => {
+    const countdownInterval = setInterval(() => {
+      setCountdown((prev: number) => {
+        if (prev === 1) {
+          onCountdownFinished(); // gọi API từ Monitor
+          return REFRESH_INTERVAL; // reset lại đếm
+        }
+        return prev - 1;
+      });
+    }, 1000);
 
-    // const fetchVehicles = async () => {
-    //     try {
-    //         const res = await getGPSService();
-    //         if (res.result && res.data) {
-    //             const vehicleList = Object.values(res.data) as IVehicle[];
-    //             setVehicles(vehicleList);
-    //         }
-    //     } catch (err) {
-    //         console.error("Lỗi khi tải dữ liệu GPS:", err);
-    //     }
-    // };
-
-    // useEffect(() => {
-    //     fetchVehicles(); // lần đầu
-    //     const fetchInterval = setInterval(() => {
-    //         fetchVehicles();
-    //         setCountdown(REFRESH_INTERVAL);
-    //     }, REFRESH_INTERVAL * 1000);
-
-    //     const countdownInterval = setInterval(() => {
-    //         setCountdown((prev) => (prev === 0 ? REFRESH_INTERVAL : prev - 1));
-    //     }, 1000);
-
-    //     return () => {
-    //         clearInterval(fetchInterval);
-    //         clearInterval(countdownInterval);
-    //     };
-    // }, []);
-
+    return () => clearInterval(countdownInterval);
+  }, [onCountdownFinished, REFRESH_INTERVAL]);
     return (
             <MapContainer
                 center={[10.7769, 106.7009]} // TP.HCM
@@ -92,7 +81,8 @@ const MapView: React.FC<MapViewProps> = ({ vehicles, countdown, onRefresh }) => 
                 style={{ height: "100vh", width: "100%" }}
             >
                 <MapSetter />   
-                <div className="absolute z-[998] bg-white top-0 left-0 right-0 flex justify-center">
+                <MapCenterUpdater center={selectedVehicle} />
+                <div className="absolute z-[998] bg-white top-0 left-0 right-0 flex justify-center" style={{zIndex: 400}}>
                     <div className="absolute -bottom-10 px-4">
                         <div data-show="true" className="ant-alert ant-alert-info ant-alert-no-icon py-1 css-vj858a" role="alert">
                             <div className="ant-alert-content">
@@ -101,7 +91,10 @@ const MapView: React.FC<MapViewProps> = ({ vehicles, countdown, onRefresh }) => 
                                         <div>Làm mới sau <span className="font-bold">{countdown}</span> giây,{" "}
                                             <span
                                                 className="underline text-prim cursor-pointer text-yellow-400"
-                                                 onClick={onRefresh}
+                                                onClick={()=>{
+                                                    setCountdown(REFRESH_INTERVAL)
+                                                    onCountdownFinished()
+                                                }}
                                             >
                                                 Làm mới
                                             </span>

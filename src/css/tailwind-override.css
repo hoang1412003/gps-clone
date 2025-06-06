@@ -8,7 +8,7 @@
     height: 22px;
 }
 .absolute.-bottom-10 {
-        background: #e6f4ff;
+    background: #e6f4ff;
     border: 1px solid #91caff;
 }
 .text-login{
@@ -49,5 +49,9 @@
 
 button.ant-btn.css-dev-only-do-not-override-mc1tut.ant-btn-primary.ant-btn-color-primary.ant-btn-variant-solid {
     width: 100%;
+}
+
+tr.ant-table-row.ant-table-row-level-0 {
+    cursor: pointer;
 }
 

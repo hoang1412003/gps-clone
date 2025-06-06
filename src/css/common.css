@@ -1,8 +1,16 @@
 .vehicle-tb {
-    width: 354px;
     height: 674px;
 }
 
 .tb-head {
     background-color: #001628;
+}
+
+.z-index-ct {
+    z-index: 501;
+}
+
+.vehicle-dt-container{
+    width: 320px;
+    height: 519px;
 }
