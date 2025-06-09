@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Select } from 'antd';
-import type { TableColumnsType } from 'antd';
-import { createStyles } from 'antd-style';
+import React, { useState } from 'react';
+// import type { TableColumnsType } from 'antd';
+// import { createStyles } from 'antd-style';
 import type { LatLngTuple } from 'leaflet';
+import TableData from './table-data';
 
-interface VehicleData {
+export interface VehicleData {
   key: string;
   imei: string;
   vehicle_name: string;
@@ -19,53 +19,54 @@ interface VehicleTrackingTableProps {
   vehicles: VehicleData[];
   toggleTable: () => void
   onSelectVehicle: (vehicle: LatLngTuple) => void;
+  setVehicleDetail: (vehicle: VehicleData) => void;
 }
 
-const columns: TableColumnsType<VehicleData> = [
-  { title: 'Biển số xe', dataIndex: 'vehicle_name', key: 'vehicle_name' },
-  { title: 'Tốc độ (km/h)', dataIndex: 'speed', key: 'speed' },
-  { title: 'IMEI', dataIndex: 'imei', key: 'imei', fixed: 'left' },
-];
+// const columns: TableColumnsType<VehicleData> = [
+//   { title: 'Biển số xe', dataIndex: 'vehicle_name', key: 'vehicle_name' },
+//   { title: 'Tốc độ (km/h)', dataIndex: 'speed', key: 'speed' },
+//   { title: 'IMEI', dataIndex: 'imei', key: 'imei', fixed: 'left' },
+// ];
 
-const useStyle = createStyles(({ css }) => {
-  const antCls = '.ant';
-  return {
-    customTable: css`
-      ${antCls}-table {
-        ${antCls}-table-container {
-          ${antCls}-table-body,
-          ${antCls}-table-content {
-            scrollbar-width: thin;
-            scrollbar-color: #eaeaea transparent;
-            scrollbar-gutter: stable;
-          }
-        }
-      }
-    `,
-  };
-});
+// const useStyle = createStyles(({ css }) => {
+//   const antCls = '.ant';
+//   return {
+//     customTable: css`
+//       ${antCls}-table {
+//         ${antCls}-table-container {
+//           ${antCls}-table-body,
+//           ${antCls}-table-content {
+//             scrollbar-width: thin;
+//             scrollbar-color: #eaeaea transparent;
+//             scrollbar-gutter: stable;
+//           }
+//         }
+//       }
+//     `,
+//   };
+// });
 
-const onChange = (value: string) => {
-  console.log(`selected ${value}`);
-};
+// const onChange = (value: string) => {
+//   console.log(`selected ${value}`);
+// };
 
-const onSearch = (value: string) => {
-  console.log('search:', value);
-};
+// const onSearch = (value: string) => {
+//   console.log('search:', value);
+// };
 
-const VehicleTrackingTable: React.FC<VehicleTrackingTableProps> = ({ vehicles, toggleTable, onSelectVehicle }) => {
-  const { styles } = useStyle();
-  const [dataSource, setDataSource] = useState<VehicleData[]>([]);
+const VehicleTrackingTable: React.FC<VehicleTrackingTableProps> = ({ vehicles, toggleTable, onSelectVehicle, setVehicleDetail}) => {
+  // const { styles } = useStyle();
+  // const [dataSource, setDataSource] = useState<VehicleData[]>([]);
   const [isFullWidth, setIsFullWidth] = useState(false);
 
-  useEffect(() => {
-    const formattedData = vehicles.map((vehicle, index) => ({
-      ...vehicle,
-      key: `${vehicle.imei}-${index}`,
-    }));
-    console.log("formattedData: ", formattedData)
-    setDataSource(formattedData);
-  }, [vehicles]);
+  // useEffect(() => {
+  //   const formattedData = vehicles.map((vehicle, index) => ({
+  //     ...vehicle,
+  //     key: `${vehicle.imei}-${index}`,
+  //   }));
+  //   console.log("formattedData: ", formattedData)
+  //   setDataSource(formattedData);
+  // }, [vehicles]);
 
   return (
     <div className='absolute top-2 left-2' style={{ zIndex: 500, width: isFullWidth ? '99%' : '400px' }}>
@@ -98,7 +99,7 @@ const VehicleTrackingTable: React.FC<VehicleTrackingTableProps> = ({ vehicles, t
             <svg stroke="currentColor" className='text-white' fill="currentColor" stroke-width="0" viewBox="0 0 256 256" color="var(--white)" height="18" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M144,104V64a8,8,0,0,1,16,0V84.69l42.34-42.35a8,8,0,0,1,11.32,11.32L171.31,96H192a8,8,0,0,1,0,16H152A8,8,0,0,1,144,104Zm-40,40H64a8,8,0,0,0,0,16H84.69L42.34,202.34a8,8,0,0,0,11.32,11.32L96,171.31V192a8,8,0,0,0,16,0V152A8,8,0,0,0,104,144Zm67.31,16H192a8,8,0,0,0,0-16H152a8,8,0,0,0-8,8v40a8,8,0,0,0,16,0V171.31l42.34,42.35a8,8,0,0,0,11.32-11.32ZM104,56a8,8,0,0,0-8,8V84.69L53.66,42.34A8,8,0,0,0,42.34,53.66L84.69,96H64a8,8,0,0,0,0,16h40a8,8,0,0,0,8-8V64A8,8,0,0,0,104,56Z"></path></svg>
           </div>
         </div>
-        <div className="p-1 w-full">
+        {/* <div className="p-1 w-full">
           <Select
             className="w-full mb-2"
             showSearch
@@ -124,7 +125,8 @@ const VehicleTrackingTable: React.FC<VehicleTrackingTableProps> = ({ vehicles, t
               };
             }}
           />
-        </div>
+        </div> */}
+        <TableData vehicles={vehicles} onSelectVehicle={onSelectVehicle} setVehicleDetail={setVehicleDetail}/>
       </div>
     </div>
   );

@@ -3,9 +3,9 @@ import { MapContainer, TileLayer, Popup, useMap } from "react-leaflet";
 import L, { type LatLngTuple } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-rotatedmarker";
-import RotatedMarker from "../components/RotatedMarker";
-import truckCar from "../../../assets/images/monitor/car/truck-car.png";
-import { useMapContext } from "../../../contexts/MapContext";
+import RotatedMarker from "./RotatedMarker";
+import truckCar from "../../../../assets/images/monitor/car/truck-car.png";
+import { useMapContext } from "../../../../contexts/MapContext";
 import React from "react";
 import { MapCenterUpdater } from "./MapCenterUpdater";
 
@@ -78,7 +78,7 @@ const MapView: React.FC<MapViewProps> = ({
                 zoom={12}
                 scrollWheelZoom={true}
                 zoomControl={false}
-                style={{ height: "100vh", width: "100%" }}
+                style={{ height: "95%", width: "100%" }}
             >
                 <MapSetter />   
                 <MapCenterUpdater center={selectedVehicle} />

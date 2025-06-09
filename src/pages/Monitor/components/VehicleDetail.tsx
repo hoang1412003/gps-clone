@@ -1,8 +1,13 @@
+import { SlArrowRight } from "react-icons/sl";
+import type { VehicleData } from "./vehicle-table";
 interface VehicleDetailProps {
   showDetail: boolean;
+  setShowDetail: (show: boolean) => void
+  vehicleDetail: VehicleData
 }
 
-const VehicleDetail: React.FC<VehicleDetailProps> = ({ showDetail }) => {
+const VehicleDetail:React.FC<VehicleDetailProps> = ({showDetail, setShowDetail, vehicleDetail}) => {
+  //const [showDetail, setShowDetail] = useState(false)
   return (
     <div
       className={`
@@ -13,23 +18,12 @@ const VehicleDetail: React.FC<VehicleDetailProps> = ({ showDetail }) => {
   `}
     >
       <div className="flex px-2 justify-between bg-black items-center h-8">
-        <div className="text-white">ten</div>
-        <div>
-          <svg
-            stroke="currentColor"
-            className="text-white"
-            fill="currentColor"
-            strokeWidth="0"
-            viewBox="0 0 256 256"
-            color="var(--white)"
-            height="18"
-            width="18"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path>
-          </svg>
+        <div className="text-white">{vehicleDetail ? vehicleDetail.vehicle_name: 'No device picked'}</div>
+        <div onClick={()=>setShowDetail(false)}>
+          <SlArrowRight className="text-white cursor-pointer"/>
         </div>
       </div>
+
     </div>
   );
 };

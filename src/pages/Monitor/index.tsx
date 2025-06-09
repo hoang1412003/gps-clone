@@ -2,11 +2,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { message } from 'antd';
 import { useEffect, useState } from "react";
 import MapView from "./components/MapView";
-import VehicleTrackingTable from "./components/VehicleTrackingTable";
+import VehicleTrackingTable, { type VehicleData } from "./components/vehicle-table";
 import type { IVehicle } from "../../types/IVehicle";
 import { getGPSService } from "../../services/gpsService";
 import type { LatLngTuple } from "leaflet";
 import VehicleDetail from "./components/VehicleDetail";
+import BottomTool from "./components/bottom-toolbar/BottomToolbar";
+import { BsInfoCircle } from "react-icons/bs";
 
 //const REFRESH_INTERVAL = 10;
 
@@ -18,10 +20,13 @@ const Monitor = () => {
   const [vehicles, setVehicles] = useState<IVehicle[]>([]);
   const [showTable, setShowTable] = useState(true);
   const [selectedVehicle, setSelectedVehicle] = useState<LatLngTuple | null>(null);
-  const [showDetail, setShowDetail] = useState(false)
+  //const [showDetail] = useState(false)
 
   //const REFRESH_INTERVAL = 10;
     console.log("check moniotr")
+
+  const [showDetail, setShowDetail] = useState(false)
+  const [vehicleDetail, setVehicleDetail] = useState<VehicleData | null>(null)
   const fetchVehicles = async () => {
     try {
       const res = await getGPSService();
@@ -52,7 +57,7 @@ const Monitor = () => {
   }, [location.state?.msg]);
 
   return (
-    <div className="relative">
+    <div className="relative h-full">
       {contextHolder}
       <MapView
         vehicles={vehicles}
@@ -75,10 +80,20 @@ const Monitor = () => {
           vehicles={vehicles}
           toggleTable={() => setShowTable(false)}
           onSelectVehicle={setSelectedVehicle}
+          setVehicleDetail={setVehicleDetail}
         />
       )}
-    
-      <VehicleDetail showDetail={showDetail}/>
+      {!showDetail && (
+        <div
+          className="absolute top-2 right-2 bg-black flex items-center p-2 cursor-pointer text-white"
+          style={{ zIndex: 501 }}
+          onClick={() => setShowDetail(true)}
+        >
+        <BsInfoCircle />
+        </div>
+      )}
+      <VehicleDetail showDetail={showDetail} setShowDetail={setShowDetail} vehicleDetail={vehicleDetail}/>
+      <BottomTool/>
     </div>
   );
 };
